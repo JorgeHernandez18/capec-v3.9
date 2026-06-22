@@ -7,7 +7,7 @@
 
 ## ¿Qué es este TFM?
 
-Un **Trabajo Fin de Máster (TFM)** es el proyecto de investigación aplicado que culmina el Máster en Análisis y Visualización de Big Data. En este caso, el objetivo es evaluar qué columnas de un dataset aportan información útil para el análisis de patrones de ataque cibernético descritos en [CAPEC](https://capec.mitre.org/) (*Common Attack Pattern Enumeration and Classification*, MITRE), usando la **entropía de columnas** y la métrica **EIAC** (*Entropía Informativa Ajustada por Columna*).
+Un **Trabajo Fin de Máster (TFM)** es el proyecto de investigación aplicado que culmina el Máster en Análisis y Visualización de Big Data. En este caso, el objetivo es evaluar qué columnas de un dataset aportan información útil para el análisis de patrones de ataque cibernético descritos en [CAPEC](https://capec.mitre.org/) (*Common Attack Pattern Enumeration and Classification*, MITRE), usando una propuesta para evaluar **entropía de columnas** y la métrica denominada **EIAC** (*Entropía Informativa Ajustada por Columna*).
 
 Este repositorio contiene el código experimental, los datasets de prueba y los resultados generados para sustentar dicho trabajo.
 
