@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Procesa CAPEC oficial y calcula entropía de columnas.
+"""Procesa datasets CAPEC y calcula entropía de columnas.
 
 Entradas esperadas:
-  Google Sheets publicado como CSV o datos/*/*.csv
+  CSV en datasets/CAPEC/, datasets/sintetico/ o datasets/SR-BH/
+  También admite URL pública (p. ej. Google Sheets) mediante --input
 
 Salidas generadas:
   datos/processed/capec_dataset.csv

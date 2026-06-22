@@ -1,48 +1,56 @@
 # Evaluación de la Relevancia Informativa de Características en Datasets CAPEC
 
-> **Trabajo Fin de Máster (TFM)** — *Evaluación de la Relevancia Informativa de Características en Datasets basados en CAPEC de Ataques Cibernéticos Mediante Entropía de Columnas*
+**Trabajo Fin de Máster (TFM)**  
+*Evaluación de la Relevancia Informativa de Características en Datasets basados en CAPEC de Ataques Cibernéticos Mediante Entropía de Columnas*
 
-Herramienta de análisis en Python para medir la **relevancia informativa** de las columnas en datasets de patrones de ataque cibernético, aplicando **entropía de Shannon** y la métrica compuesta **EIAC** (*Entropía Informativa Ajustada por Columna*).
+---
+
+## ¿Qué es este TFM?
+
+Un **Trabajo Fin de Máster (TFM)** es el proyecto de investigación aplicado que culmina el Máster en Análisis y Visualización de Big Data. En este caso, el objetivo es evaluar qué columnas de un dataset aportan información útil para el análisis de patrones de ataque cibernético descritos en [CAPEC](https://capec.mitre.org/) (*Common Attack Pattern Enumeration and Classification*, MITRE), usando la **entropía de columnas** y la métrica **EIAC** (*Entropía Informativa Ajustada por Columna*).
+
+Este repositorio contiene el código experimental, los datasets de prueba y los resultados generados para sustentar dicho trabajo.
+
+---
+
+## Autores
+
+
+| Autor           | Correo                                                            |
+| --------------- | ----------------------------------------------------------------- |
+| Marco Adarme    | [madarme@ufps.edu.co](mailto:madarme@ufps.edu.co)                 |
+| Ronald Benitez  | [ronaldeduardobm@ufps.edu.co](mailto:ronaldeduardobm@ufps.edu.co) |
+| Jorge Hernandez | [jorgekevinhl@ufps.edu.co](mailto:jorgekevinhl@ufps.edu.co)       |
+
 
 ---
 
 ## Descripción
 
-Este repositorio forma parte de un TFM orientado a evaluar qué atributos de un dataset aportan información útil para el análisis de patrones de ataque descritos en [CAPEC](https://capec.mitre.org/) (*Common Attack Pattern Enumeration and Classification*, MITRE).
-
-El script `procesar_capec_entropia.py` automatiza el flujo completo:
-
-1. **Ingesta** de un dataset en formato CSV.
-2. **Enriquecimiento** con variables derivadas (conteos de elementos, longitudes de texto, etc.).
-3. **Cálculo de entropía** por columna y ranking de variabilidad.
-4. **Evaluación EIAC** con clasificación funcional y de relevancia.
-5. **Generación de artefactos** listos para el TFM: CSV, tablas LaTeX y reportes PDF.
+Repositorio del TFM para **calcular y comparar la relevancia informativa de las columnas** en tres tipos de dataset: catálogo CAPEC, datos sintéticos y tráfico SR-BH. El script principal aplica entropía de Shannon, la métrica **EIAC** y genera reportes en CSV, PDF y LaTeX.
 
 ---
 
-## Metodología
+## ¿Qué es EIAC?
+
+La **entropía de Shannon normalizada** H_n(X) mide la dispersión de valores en una columna, pero puede **sobrevalorar** atributos que son casi únicos (como un identificador) o que tienen muchos datos vacíos.
+
+**EIAC** corrige ese sesgo combinando tres factores:
+
+$$
+\text{EIAC}(X) = H_n(X) \times C(X) \times \bigl(1 - U(X)\bigr)
+$$
 
 
-### Métrica EIAC
+| Componente | Significado                                                              |
+| ---------- | ------------------------------------------------------------------------ |
+| Hn(X)      | Entropía normalizada (0 = sin variación, 1 = máxima dispersión uniforme) |
+| C(X)       | Completitud: proporción de celdas con valor no vacío                     |
+| U(X)       | Unicidad: proporción de valores distintos respecto al total de filas     |
+| 1 - U(X)   | Penalización por columnas que se comportan como identificadores          |
 
-La entropía pura puede sobrevalorar columnas con muchos valores únicos o datos faltantes. **EIAC** ajusta la medida incorporando:
 
-| Símbolo | Significado |
-|---------|-------------|
-| \(H_n(X)\) | Entropía normalizada |
-| \(C(X)\) | Completitud (proporción de valores no vacíos) |
-| \(U(X)\) | Ratio de unicidad |
-| **EIAC** | \(H_n(X) * C(X) * (1 - U(X))\) |
-
-### Clasificación de relevancia
-
-| Rango EIAC | Clasificación |
-|------------|---------------|
-| ≥ 0.66 | Alta relevancia |
-| 0.33 – 0.66 | Relevancia media |
-| < 0.33 | Baja relevancia |
-
-Además, cada columna recibe una **clasificación funcional** (analítica, trazabilidad, descriptiva contextual, bajo aporte por datos faltantes, etc.) y un texto de análisis interpretativo.
+Con EIAC se obtiene un **ranking de columnas** con clasificación de relevancia (alta, media, baja) y una etiqueta funcional (analítica, trazabilidad, descriptiva, etc.), útil para decidir qué atributos conservar o depurar en un dataset de ciberseguridad.
 
 ---
 
@@ -50,26 +58,93 @@ Además, cada columna recibe una **clasificación funcional** (analítica, traza
 
 ```
 capec-v3.9/
-├── procesar_capec_entropia.py   # Script principal de análisis
-├── capecnuevo.xml               # Catálogo CAPEC v3.9 (MITRE)
-├── datasets/                    # Datasets de entrada
-│   ├── CAPEC/                   # Dataset basado en el catálogo CAPEC
-│   ├── sintetico/               # Dataset sintético generado
-│   └── SR-BH/                   # Dataset SR-BH (referencia comparativa)
-└── datos/                       # Salidas generadas por el script
-    ├── processed/               # CSV enriquecido
-    └── results/                 # Rankings, LaTeX y PDF
+├── scripts/
+│   └── procesar_capec_entropia.py    # Script principal
+├── datasets/
+│   ├── CAPEC/                        # Dataset del catálogo CAPEC
+│   ├── sintetico/                    # Dataset sintético de prueba
+│   └── SR-BH/                        # Dataset de tráfico HTTP (SR-BH)
+├── datos/
+│   ├── processed/                    # CSV enriquecido
+│   └── results/                      # Rankings, LaTeX y PDF
+└── capecnuevo.xml                    # Catálogo CAPEC v3.9 (referencia MITRE)
 ```
 
-Cada subcarpeta de `datasets/` debe contener **un archivo CSV** con el dataset correspondiente. El análisis se ejecuta indicando la ruta del CSV con el parámetro `--input`.
+### Enlaces directos
+
+
+| Recurso             | Ruta                                                                                                           |
+| ------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Script principal    | `[scripts/procesar_capec_entropia.py](scripts/procesar_capec_entropia.py)`                                     |
+| Dataset CAPEC       | `[datasets/CAPEC/2000.csv](datasets/CAPEC/2000.csv)`                                                           |
+| Dataset sintético   | `[datasets/sintetico/dataset_sintetico_grande.csv](datasets/sintetico/dataset_sintetico_grande.csv)`           |
+| Dataset SR-BH       | `[datasets/SR-BH/dataset_real - dataset_real_40k.csv](datasets/SR-BH/dataset_real%20-%20dataset_real_40k.csv)` |
+| Catálogo CAPEC v3.9 | `[capecnuevo.xml](capecnuevo.xml)`                                                                             |
+
+
+---
+
+## Cálculo de entropía y EIAC
+
+Esta sección describe **cómo se calculan las métricas** implementadas en el script.
+
+### Paso 1 — Entropía de Shannon
+
+Para una columna X con k valores distintos y frecuencias p_i:
+
+
+$$
+H(X) = -\sum_{i=1}^{k} p_i \log_2 p_i
+\qquad
+H_n(X) = \frac{H(X)}{\log_2 k}
+$$
+
+
+### Paso 2 — Completitud y unicidad
+
+$$
+C(X) = \frac{\text{filas con valor}}{\text{total de filas}}
+\qquad
+U(X) = \frac{k}{\text{total de filas}}
+$$
+
+### Paso 3 — EIAC y clasificación
+
+$$
+\text{EIAC}(X) = H_n(X) \times C(X) \times \bigl(1 - U(X)\bigr)
+$$
+
+
+| Rango EIAC  | Relevancia |
+| ----------- | ---------- |
+| ≥ 0.66      | Alta       |
+| 0.33 – 0.66 | Media      |
+| < 0.33      | Baja       |
+
+
+### Ejemplo ilustrativo
+
+Supongamos un dataset de 100 filas. La tabla siguiente muestra cómo cambia la interpretación al pasar de $H_n(X)$ a EIAC:
+
+
+| Columna (ejemplo) | Valores                    | $H_n(X)$ | C(X) | U(X) | 1 − U(X) | EIAC     | Lectura                                                      |
+| ----------------- | -------------------------- | ------ | ---- | ---- | -------- | -------- | ------------------------------------------------------------ |
+| `ID`              | 100 IDs distintos          | 1.00   | 1.00 | 1.00 | 0.00     | **0.00** | Identificador: alta entropía, pero nula relevancia analítica |
+| `Abstraction`     | Standard, Detailed, Meta   | 0.92   | 1.00 | 0.03 | 0.97     | **0.89** | Categórica con pocos niveles: alta relevancia                |
+| `Status`          | 80 % Draft, 20 % vacío     | 0.72   | 0.80 | 0.02 | 0.98     | **0.56** | Buena variación, penalizada por datos faltantes              |
+| `Constant_Flag`   | Siempre "Standard"         | 0.00   | 1.00 | 0.01 | 0.99     | **0.00** | Sin variación: no aporta información                         |
+| `Mostly_Missing`  | 90 % vacío, resto disperso | 0.95   | 0.10 | 0.08 | 0.92     | **0.09** | H_n alto, pero EIAC bajo por incompletitud                   |
+
+
+Este contraste es la razón de usar EIAC frente a la entropía pura permite distinguir columnas **realmente útiles** de columnas que solo parecen informativas.
 
 ---
 
 ## Requisitos
 
-- **Python** 3.9 o superior
-- **pandas** — manipulación de datos
-- **reportlab** — generación de reportes PDF *(opcional pero recomendado)*
+- Python 3.9+
+- [pandas](https://pandas.pydata.org/)
+- [reportlab](https://www.reportlab.com/) *(opcional, para generar PDF)*
 
 ```bash
 python3 -m pip install pandas reportlab
@@ -79,99 +154,64 @@ python3 -m pip install pandas reportlab
 
 ## Uso
 
-### Ejecución básica (fuente remota por defecto)
-
-```bash
-python3 procesar_capec_entropia.py
-```
-
-Por defecto, el script descarga el dataset desde una hoja de Google Sheets publicada como CSV.
-
-### Análisis sobre datasets locales
+Desde la raíz del repositorio:
 
 ```bash
 # Dataset CAPEC
-python3 procesar_capec_entropia.py --input datasets/CAPEC/dataset.csv
+python3 scripts/procesar_capec_entropia.py --input datasets/CAPEC/2000.csv
 
 # Dataset sintético
-python3 procesar_capec_entropia.py --input datasets/sintetico/dataset.csv
+python3 scripts/procesar_capec_entropia.py --input datasets/sintetico/dataset_sintetico_grande.csv
 
 # Dataset SR-BH
-python3 procesar_capec_entropia.py --input datasets/SR-BH/dataset.csv
+python3 scripts/procesar_capec_entropia.py --input "datasets/SR-BH/dataset_real - dataset_real_40k.csv"
 ```
 
 ### Parámetros principales
 
-| Parámetro | Descripción | Valor por defecto |
-|-----------|-------------|-------------------|
-| `--input` | Ruta local o URL del CSV de entrada | Google Sheets (CAPEC) |
-| `--processed` | Ruta del dataset procesado | `datos/processed/capec_dataset.csv` |
-| `--entropy` | Ranking de entropía | `datos/results/entropia_columnas.csv` |
-| `--eiac` | Ranking EIAC | `datos/results/eiac_columnas.csv` |
-| `--eiac-latex` | Tabla EIAC en LaTeX | `datos/results/eiac_tabla_latex.tex` |
-| `--eiac-pdf` | Reporte EIAC en PDF | `datos/results/eiac_reporte.pdf` |
-| `--comparison-pdf` | Comparación Hₙ(X) vs EIAC (PDF) | `datos/results/eiac_comparacion_hn_eiac.pdf` |
-| `--comparison-latex` | Comparación Hₙ(X) vs EIAC (LaTeX) | `datos/results/eiac_comparacion_hn_eiac.tex` |
-| `--pdf-rows` | Filas máximas en el PDF | Todas |
-| `--print-rows` | Filas a mostrar en consola | Todas |
 
-Cada ejecución añade un **timestamp** a los archivos de salida (formato `YYYYMMDD_HHMMSS`) para conservar el historial de análisis.
+| Parámetro          | Descripción             | Por defecto                                  |
+| ------------------ | ----------------------- | -------------------------------------------- |
+| `--input`          | CSV local o URL         | Google Sheets (CAPEC)                        |
+| `--processed`      | Dataset enriquecido     | `datos/processed/capec_dataset.csv`          |
+| `--entropy`        | Ranking de entropía     | `datos/results/entropia_columnas.csv`        |
+| `--eiac`           | Ranking EIAC            | `datos/results/eiac_columnas.csv`            |
+| `--eiac-pdf`       | Reporte PDF             | `datos/results/eiac_reporte.pdf`             |
+| `--comparison-pdf` | Comparación H_n vs EIAC | `datos/results/eiac_comparacion_hn_eiac.pdf` |
+
+
+Cada ejecución añade un timestamp (`YYYYMMDD_HHMMSS`) a los archivos de salida.
 
 ---
 
 ## Salidas generadas
 
-| Archivo | Contenido |
-|---------|-----------|
-| `capec_dataset_*.csv` | Dataset original + columnas derivadas (conteos, longitudes) |
-| `entropia_columnas_*.csv` | Entropía de Shannon, entropía normalizada y clasificación por variabilidad |
-| `eiac_columnas_*.csv` | Ranking EIAC completo con distribución, relevancia y clasificación funcional |
-| `eiac_tabla_latex_*.tex` | Tabla LaTeX lista para incluir en la memoria del TFM |
-| `eiac_reporte_*.pdf` | Reporte visual con campos obligatorios y columnas complementarias |
-| `eiac_comparacion_hn_eiac_*.pdf` | Comparación entre entropía normalizada y EIAC |
-| `eiac_comparacion_hn_eiac_*.tex` | Tabla LaTeX de la comparación Hₙ(X) vs EIAC |
 
-### Columnas de análisis obligatorio
+| Archivo                          | Contenido                                              |
+| -------------------------------- | ------------------------------------------------------ |
+| `capec_dataset_*.csv`            | Dataset original + columnas derivadas                  |
+| `entropia_columnas_*.csv`        | Entropía de Shannon y entropía normalizada por columna |
+| `eiac_columnas_*.csv`            | Ranking EIAC con relevancia y clasificación funcional  |
+| `eiac_reporte_*.pdf`             | Reporte visual (campos obligatorios y complementarios) |
+| `eiac_comparacion_hn_eiac_*.pdf` | Comparación entre H_n(X) y EIAC                        |
+| `eiac_tabla_latex_*.tex`         | Tabla EIAC en LaTeX                                    |
+| `eiac_comparacion_hn_eiac_*.tex` | Tabla comparativa en LaTeX                             |
 
-El reporte PDF destaca un subconjunto de columnas definido como núcleo del dataset modelo:
 
-- `ID`, `Name`, `Description`
-- `Abstraction`, `Status`
-- `Likelihood Of Attack`, `Typical Severity`
+### Exportación LaTeX
 
----
-
-## Procesamiento de datos
-
-El script enriquece el dataset original extrayendo métricas de campos estructurados de CAPEC:
-
-- **Longitudes** de `Description` y `Notes`
-- **Conteos** de términos alternativos, prerrequisitos, mitigaciones, indicadores, etc.
-- **Patrones** en `Execution Flow` (pasos y técnicas), `Consequences` (alcance e impacto) y `Taxonomy Mappings`
-
-Estas columnas derivadas se incluyen en el análisis de entropía y EIAC junto con las columnas originales.
-
----
-
-## Contexto académico
-
-Este código implementa la parte experimental del TFM, permitiendo:
-
-- **Comparar** la relevancia informativa entre datasets reales (CAPEC), sintéticos y de referencia (SR-BH).
-- **Identificar** qué columnas aportan valor analítico frente a las que actúan como identificadores, descriptores contextuales o presentan baja variabilidad.
-- **Contrastar** la entropía normalizada con EIAC para evidenciar el efecto de la completitud y la unicidad en la evaluación de características.
-- **Exportar** resultados en formatos académicos (CSV, LaTeX, PDF) para su integración directa en la memoria.
+Los archivos `.tex` se generan como **material auxiliar** para documentos de investigación: memoria del TFM, artículos o informes técnicos que requieran tablas listas para compilar en LaTeX sin reescribir los resultados a mano. No son la salida principal del análisis; el núcleo de resultados está en los CSV y PDF.
 
 ---
 
 ## Referencias
 
 - [MITRE CAPEC](https://capec.mitre.org/) — Common Attack Pattern Enumeration and Classification
-- CAPEC Version 3.9 (2023-01-24) — incluido en `capecnuevo.xml`
+- CAPEC v3.9 (2023-01-24) — `[capecnuevo.xml](capecnuevo.xml)`
 - Shannon, C. E. (1948). *A Mathematical Theory of Communication*
 
 ---
 
 ## Licencia y uso
 
-Proyecto académico desarrollado en el marco del **Máster en Big Data**. El catálogo CAPEC es propiedad de [The MITRE Corporation](https://www.mitre.org/) y se distribuye bajo sus condiciones de uso.
+Proyecto académico del **Máster en Análisis y Visualización de Big Data — UNIR**. El catálogo CAPEC es propiedad de [The MITRE Corporation](https://www.mitre.org/) y se distribuye bajo sus condiciones de uso.
