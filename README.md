@@ -33,7 +33,7 @@ Repositorio del TFM para **calcular y comparar la relevancia informativa de las 
 
 ## ¿Qué es EIAC?
 
-La **entropía de Shannon normalizada** H_n(X) mide la dispersión de valores en una columna, pero puede **sobrevalorar** atributos que son casi únicos (como un identificador) o que tienen muchos datos vacíos.
+La **entropía de Shannon normalizada** $H_n(X)$ mide la dispersión de valores en una columna, pero puede **sobrevalorar** atributos que son casi únicos (como un identificador) o que tienen muchos datos vacíos.
 
 **EIAC** corrige ese sesgo combinando tres factores:
 
@@ -44,7 +44,7 @@ $$
 
 | Componente | Significado                                                              |
 | ---------- | ------------------------------------------------------------------------ |
-| Hn(X)      | Entropía normalizada (0 = sin variación, 1 = máxima dispersión uniforme) |
+| $H_n(X)$      | Entropía normalizada (0 = sin variación, 1 = máxima dispersión uniforme) |
 | C(X)       | Completitud: proporción de celdas con valor no vacío                     |
 | U(X)       | Unicidad: proporción de valores distintos respecto al total de filas     |
 | 1 - U(X)   | Penalización por columnas que se comportan como identificadores          |
