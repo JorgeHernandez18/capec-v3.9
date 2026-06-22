@@ -72,14 +72,13 @@ capec-v3.9/
 
 ### Enlaces directos
 
-
-| Recurso             | Ruta                                                                                                           |
-| ------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Script principal    | `[scripts/procesar_capec_entropia.py](scripts/procesar_capec_entropia.py)`                                     |
-| Dataset CAPEC       | `[datasets/CAPEC/2000.csv](datasets/CAPEC/2000.csv)`                                                           |
-| Dataset sintético   | `[datasets/sintetico/dataset_sintetico_grande.csv](datasets/sintetico/dataset_sintetico_grande.csv)`           |
-| Dataset SR-BH       | `[datasets/SR-BH/dataset_real - dataset_real_40k.csv](datasets/SR-BH/dataset_real%20-%20dataset_real_40k.csv)` |
-| Catálogo CAPEC v3.9 | `[capecnuevo.xml](capecnuevo.xml)`                                                                             |
+| Recurso             | Ruta |
+|----------------------|------|
+| Script principal    | [scripts/procesar_capec_entropia.py](scripts/procesar_capec_entropia.py) |
+| Dataset CAPEC       | [datasets/CAPEC/2000.csv](datasets/CAPEC/2000.csv) |
+| Dataset sintético   | [datasets/sintetico/dataset_sintetico_grande.csv](datasets/sintetico/dataset_sintetico_grande.csv) |
+| Dataset SR-BH       | [datasets/SR-BH/dataset_real - dataset_real_40k.csv](datasets/SR-BH/dataset_real%20-%20dataset_real_40k.csv) |
+| Catálogo CAPEC v3.9 | [capecnuevo.xml](capecnuevo.xml) |
 
 
 ---
@@ -133,7 +132,7 @@ Supongamos un dataset de 100 filas. La tabla siguiente muestra cómo cambia la i
 | `Abstraction`     | Standard, Detailed, Meta   | 0.92   | 1.00 | 0.03 | 0.97     | **0.89** | Categórica con pocos niveles: alta relevancia                |
 | `Status`          | 80 % Draft, 20 % vacío     | 0.72   | 0.80 | 0.02 | 0.98     | **0.56** | Buena variación, penalizada por datos faltantes              |
 | `Constant_Flag`   | Siempre "Standard"         | 0.00   | 1.00 | 0.01 | 0.99     | **0.00** | Sin variación: no aporta información                         |
-| `Mostly_Missing`  | 90 % vacío, resto disperso | 0.95   | 0.10 | 0.08 | 0.92     | **0.09** | H_n alto, pero EIAC bajo por incompletitud                   |
+| `Mostly_Missing`  | 90 % vacío, resto disperso | 0.95   | 0.10 | 0.08 | 0.92     | **0.09** | $H_n$ alto, pero EIAC bajo por incompletitud                   |
 
 
 Este contraste es la razón de usar EIAC frente a la entropía pura permite distinguir columnas **realmente útiles** de columnas que solo parecen informativas.
