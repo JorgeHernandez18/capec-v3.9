@@ -27,7 +27,7 @@ Este repositorio contiene el código experimental, los datasets de prueba y los 
 
 ## Descripción
 
-Repositorio del TFM para **calcular y comparar la relevancia informativa de las columnas** en tres tipos de dataset: catálogo CAPEC, datos sintéticos y tráfico SR-BH. El script principal aplica entropía de Shannon, la métrica **EIAC** y genera reportes en CSV, PDF y LaTeX.
+Repositorio del TFM para **calcular y comparar la relevancia informativa de las columnas** en tres tipos de dataset: catálogo CAPEC, datos sintéticos y tráfico SR-BH. El script principal aplica entropía de Shannon, la métrica **EIAC** y genera reportes en CSV, PDF y LaTeX. Un segundo script produce **gráficas comparativas** entre $H_n(X)$ y EIAC para los tres escenarios del estudio.
 
 ---
 
@@ -59,7 +59,8 @@ Con EIAC se obtiene un **ranking de columnas** con clasificación de relevancia 
 ```
 capec-v3.9/
 ├── scripts/
-│   └── procesar_capec_entropia.py    # Script principal
+│   ├── procesar_capec_entropia.py    # Cálculo de entropía y EIAC
+│   └── graficas_Hn_EAIC.py           # Gráficas comparativas Hn(X) vs EIAC
 ├── datasets/
 │   ├── CAPEC/                        # Dataset del catálogo CAPEC
 │   ├── sintetico/                    # Dataset sintético de prueba
@@ -75,6 +76,7 @@ capec-v3.9/
 | Recurso             | Ruta |
 |----------------------|------|
 | Script principal    | [scripts/procesar_capec_entropia.py](scripts/procesar_capec_entropia.py) |
+| Script de gráficas  | [scripts/graficas_Hn_EAIC.py](scripts/graficas_Hn_EAIC.py) |
 | Dataset CAPEC       | [datasets/CAPEC/2000.csv](datasets/CAPEC/2000.csv) |
 | Dataset sintético   | [datasets/sintetico/dataset_sintetico_grande.csv](datasets/sintetico/dataset_sintetico_grande.csv) |
 | Dataset SR-BH       | [datasets/SR-BH/dataset_real - dataset_real_40k.csv](datasets/SR-BH/dataset_real%20-%20dataset_real_40k.csv) |
@@ -144,9 +146,10 @@ Este contraste es la razón de usar EIAC frente a la entropía pura permite dist
 - Python 3.9+
 - [pandas](https://pandas.pydata.org/)
 - [reportlab](https://www.reportlab.com/) *(opcional, para generar PDF)*
+- [matplotlib](https://matplotlib.org/) *(para gráficas comparativas)*
 
 ```bash
-python3 -m pip install pandas reportlab
+python3 -m pip install pandas reportlab matplotlib
 ```
 
 ---
@@ -180,6 +183,41 @@ python3 scripts/procesar_capec_entropia.py --input "datasets/SR-BH/dataset_real 
 
 
 Cada ejecución añade un timestamp (`YYYYMMDD_HHMMSS`) a los archivos de salida.
+
+---
+
+## Gráficas comparativas $H_n(X)$ vs EIAC
+
+El script [scripts/graficas_Hn_EAIC.py](scripts/graficas_Hn_EAIC.py) genera visualizaciones para contrastar la entropía normalizada de Shannon con EIAC en los **tres escenarios** del TFM: CAPEC, sintético y SR-BH.
+
+### ¿Qué hace?
+
+1. **Carga los rankings EIAC** de cada escenario desde hojas de Google Sheets publicadas como CSV (columnas `Columna`, `Hn(X)` y `EIAC`).
+2. **Gráficos de mancuerna (dumbbell)** — uno por escenario — que muestran, para cada columna, la distancia entre $H_n(X)$ (gris) y EIAC (teal). Permite ver de un vistazo qué columnas reduce EIAC respecto a Shannon.
+3. **Diagrama de dispersión resumen** — superpone los tres escenarios sobre el plano $H_n(X)$ vs EIAC, con la recta $y = x$ como referencia de “sin ajuste”. Los puntos por debajo de la diagonal indican que EIAC penalizó la columna (por unicidad, datos faltantes o ambos).
+4. **Empaqueta las figuras** en `graficas_eiac.zip` (PDF y PNG de cada gráfico).
+
+### Uso
+
+Desde la raíz del repositorio:
+
+```bash
+python3 scripts/graficas_Hn_EAIC.py
+```
+
+Requiere conexión a internet para leer las hojas de cálculo. Las figuras se guardan en el directorio desde el que se ejecuta el comando.
+
+### Salidas del script de gráficas
+
+| Archivo | Contenido |
+|---------|-----------|
+| `comparacion_hn_eiac_escenario1.pdf` / `.png` | Escenario 1 — CAPEC |
+| `comparacion_hn_eiac_escenario2.pdf` / `.png` | Escenario 2 — Sintético |
+| `comparacion_hn_eiac_escenario3.pdf` / `.png` | Escenario 3 — SR-BH |
+| `comparacion_hn_eiac_dispersion.pdf` / `.png` | Dispersión conjunta de los tres escenarios |
+| `graficas_eiac.zip` | Paquete con todas las figuras anteriores |
+
+> **Nota:** El archivo queda disponible en disco sin necesidad de descarga adicional.
 
 ---
 
